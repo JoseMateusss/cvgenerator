@@ -26,6 +26,7 @@ class CreateCurriculum extends CreateRecord
                 ->schema([
                     TextInput::make('name')
                         ->label('Nome completo')
+                        ->alpha()
                         ->required(),
                     TextInput::make('email')
                         ->label('E-mail para contato')
@@ -38,6 +39,7 @@ class CreateCurriculum extends CreateRecord
                         ->required(),
                     MarkdownEditor::make('profile')
                         ->label('Resumo profissional')
+                        ->columnSpan(2),
                 ]),
             Step::make('Experiâncias')
                 ->schema([
@@ -65,21 +67,58 @@ class CreateCurriculum extends CreateRecord
                                 ->displayFormat('d/m/Y')
                                 ->required(),
                             DatePicker::make('final_date')
-                                ->label('Data de termino')
+                                ->label('Data de término')
                                 ->displayFormat('d/m/Y')
-                                ->helperText('Deixe em branco se estiver trabalhando nesta empresa atualmente')
+                                ->after('start_date')
+                                ->helperText('Deixe em branco se estiver trabalhando nesta empresa atualmente'),
+                            MarkdownEditor::make('description')
+                                ->label('Descreva seus aprendizados e vivências')
+                                ->required()
+                                ->columnSpan(2),
                         ])
                         ->columns(2),
 
                 ])
                 ->columns(1),
 
-            Step::make('Formação')
+            Step::make('Formações')
                 ->schema([
-                    Toggle::make('is_visible')
-                        ->label('Visible to customers.')
-                        ->default(true),
-                ]),
+                    Repeater::make('formations')
+                        ->label('Quais são suas formações?')
+                        ->schema([
+                            TextInput::make('institution')
+                                ->label('Instituição de ensino')
+                                ->required(),
+                            TextInput::make('degree')
+                                ->label('Grau')
+                                ->required(),
+                            Select::make('modality')
+                                ->label('Modalidade')
+                                ->options([
+                                    'in person' => 'Presencial',
+                                    'home office' => 'Home office',
+                                    'hybrid' => 'Hibrido',
+                                ])
+                                ->required(),
+                            DatePicker::make('start_date')
+                                ->label('Data de início')
+                                ->displayFormat('d/m/Y')
+                                ->required(),
+                            DatePicker::make('final_date')
+                                ->label('Data de término')
+                                ->displayFormat('d/m/Y')
+                                ->after('start_date')
+                                ->helperText('Deixe em branco se formação estiver em curso'),
+                            MarkdownEditor::make('description')
+                                ->label('Descreva seus aprendizados e vivências')
+                                ->required()
+                                ->columnSpan(2),
+                        ])
+                        ->columns(2),
+                ])
+                ->columns(1),
         ];
     }
+
+
 }
